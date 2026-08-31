@@ -1,51 +1,63 @@
 //	課題
-//---------------------------------------------------------------
-//	システム全体を管理する
-//---------------------------------------------------------------
 #include <stdio.h>
+#include "cash.h"
 
-//---------------------------------------------------------------
-//	部品10
-//---------------------------------------------------------------
-#include "fruit.h"
-
-
-//---------------------------------------------------------------
-//	部品9
-//---------------------------------------------------------------
-static long main_calcFruit(void);
+//	-------------------------------------------
+//		本ファイルは変更する必要はない
+//	-------------------------------------------
 
 int main(void)
 {
-	long priceAll = 0;
+	H_CARD hYamada = NULL;
+	H_CARD hSato = NULL;
 
-	//	フルーツ情報の表示
-	printFruitAll();
+	//--------------------------------
+	//	山田太郎さんのATM
 
-	//	フルーツの購入価格計算
-	priceAll = main_calcFruit();
+	//	キャッシュカードハンドル生成
+	hYamada = createCashcard("山田太郎", 0x1234);
+	//戻ってきた部品(作成)を使用してキャッシュカードを作成する
 
-	//	総額表示
-	printf("フルーツ総額：%d\n", priceAll);
+	//	1万円預入れ
+	depositCash(hYamada, 10000);
+
+	//	カード情報表示
+	printCardInfo(hYamada);
+
+	//	3000円引出し
+	withdrawCash(hYamada, 0x1234, 3000);
+
+	//	カード情報表示
+	printCardInfo(hYamada);
+
+
+	//--------------------------------
+	//	佐藤次郎さんのATM
+
+	//	キャッシュカードハンドル生成
+	hSato = createCashcard("佐藤次郎", 0x1192);
+
+	//	30万円預入れ
+	depositCash(hSato, 300000);
+
+	//	カード情報表示
+	printCardInfo(hSato);
+
+	//	20万円引出し
+	withdrawCash(hSato, 0x1192, 200000);
+
+	//	カード情報表示
+	printCardInfo(hSato);
+
+
+	//--------------------------------
+	//	カードの破棄処理
+
+	destroyCashcard(hYamada, 0x1234);
+	hYamada = NULL;
+
+	destroyCashcard(hSato, 0x1192);
+	hSato = NULL;
 
 	return 0;
-}
-
-//---------------------------------------------------------------
-//	部品11
-//---------------------------------------------------------------
-static long main_calcFruit(void)
-{
-	long price = 0;
-
-	//	みかん2個
-	price += getFruitPrice(E_FRUIT_ID_ORANGE) * 2;//200
-
-	//	桃3個
-	price += getFruitPrice(E_FRUIT_ID_PEACH) * 3;//1200
-
-	//	リンゴ1個
-	price += getFruitPrice(E_FRUIT_ID_APPLE) * 1;//200   合計は1600
-
-	return price;
 }
